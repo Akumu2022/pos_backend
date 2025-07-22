@@ -63,7 +63,7 @@ class AssetStatus(Enum):
     dispose = "dispose"
 
 class Asset(Base):
-    __tablename__ = "assets"  # Fixed: double underscores
+    __tablename__ = "assets"  
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)

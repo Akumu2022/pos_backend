@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from models import*
-from routers import assets, users, menu, orders, expenses, reports
+from routers import assets, users, menu, orders, expenses, reports,printer
 from routers import auth as auth_router
 from startup import initialize_admin
 
@@ -33,3 +33,4 @@ app.include_router(expenses.router, prefix="/expenses", tags=["Expenses"])
 app.include_router(assets.router, prefix="/inventory", tags=["Inventory"])
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])
 app.include_router(assets.router, prefix="/assets", tags=["Assets"])
+app.include_router(printer.router, prefix="/printer", tags=["Printer"])
