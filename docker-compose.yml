@@ -1,0 +1,29 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/your-org/dede-backend:${IMAGE_TAG:-latest}
+    container_name: dede-backend
+    environment:
+      - VIRTUAL_HOST=dede-backend.kejahook.co.ke
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=dede-backend.kejahook.co.ke
+      - LETSENCRYPT_EMAIL=mikkohbrayoh@gmail.com
+    expose:
+      - "8000"
+    networks:
+      - proxy
+    restart: unless-stopped
+    volumes:
+      - ./auth:/app/auth
+      - ./routers:/app/routers
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  proxy:
+    external: true
