@@ -14,13 +14,6 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-# def authenticate_user(username: str, password: str, db: Session):
-#     user = db.query(models.User).filter(models.User.username == username).first()
-#     if not user or not verify_password(password, user.password_hash):
-#         raise HTTPException(status_code=401, detail="Invalid credentials")
-#     return user
-
-
 def authenticate_user(username: str, password: str, db: Session):
     user = db.query(models.User).filter(models.User.username == username).first()
 
