@@ -33,7 +33,7 @@ PyMySQL==1.1.1
 python-dotenv==1.1.1
 python-jose==3.5.0
 python-multipart==0.0.20
-pywin32==311
+# pywin32==311  # Windows-specific package, not needed for Linux deployment
 PyYAML==6.0.2
 requests==2.32.4
 rich==14.0.0
