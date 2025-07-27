@@ -52,7 +52,7 @@ class Expense(Base):
     category = Column(String(100), nullable=False)
     amount = Column(Float, nullable=False)
     description = Column(String(255), nullable=True)
-    date = Column(Date, server_default=text('CURRENT_DATE'))
+    date = Column(Date, default=date.today)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 # ***************************
@@ -72,5 +72,5 @@ class Asset(Base):
     value = Column(Float, nullable=True)
     purchase_date = Column(Date, default=date.today)
     status = Column(String(50), default="working")  # Simplified - use String instead of Enum
-    added_at = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
-    updated_at = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
+    added_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
