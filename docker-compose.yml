@@ -10,6 +10,11 @@ services:
       - VIRTUAL_PORT=8000
       - LETSENCRYPT_HOST=dede-backend.kejahook.co.ke
       - LETSENCRYPT_EMAIL=mikkohbrayoh@gmail.com
+      - DB_USER=admin
+      - DB_PASSWORD=R7n#xE!dG2
+      - DB_HOST=dedes.czgk0wyoco08.us-east-1.rds.amazonaws.com
+      - DB_PORT=3306
+      - DB_NAME=dedes
     expose:
       - "8000"
     ports:
