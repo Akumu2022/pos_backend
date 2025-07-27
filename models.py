@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, String, Float, DateTime, ForeignKey, Boolean, func, Enum as SqlEnum
+from sqlalchemy import Column, Date, Integer, String, Float, DateTime, ForeignKey, Boolean, func, Enum as SqlEnum, text
 from sqlalchemy.orm import relationship, declarative_base
 from datetime import date, datetime
 from enum import Enum 
@@ -52,7 +52,7 @@ class Expense(Base):
     category = Column(String(100), nullable=False)
     amount = Column(Float, nullable=False)
     description = Column(String(255), nullable=True)
-    date = Column(Date, server_default=func.current_date())
+    date = Column(Date, server_default=text('CURRENT_DATE'))
     created_at = Column(DateTime, default=datetime.utcnow)
 
 # ***************************
@@ -72,5 +72,5 @@ class Asset(Base):
     value = Column(Float, nullable=True)
     purchase_date = Column(Date, default=date.today)
     status = Column(String(50), default="working")  # Simplified - use String instead of Enum
-    added_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    added_at = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
+    updated_at = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
