@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import engine, Base
 from models import*
 from routers import assets, users, menu, orders, expenses, reports,printer
-from routers import auth as auth_router
+from routers.auth import router as auth_router
 from startup import initialize_admin
 
 # Create DB tables
@@ -18,7 +18,12 @@ app = FastAPI()
 # ✅ Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://dede-backend.kejahook.co.ke"],  # or ["http://localhost:5173"]
+    allow_origins=[
+        "https://dede-backend.kejahook.co.ke",
+        "https://front.kejahook.co.ke",
+        "http://localhost:5173",
+        "http://localhost:3000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,7 +31,7 @@ app.add_middleware(
 
 
 # Routers
-app.include_router(auth_router.router, prefix="/auth", tags=["Auth"])
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(menu.router, prefix="/menu", tags=["Menu"])
 app.include_router(orders.router, prefix="/orders", tags=["Orders"])
