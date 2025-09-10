@@ -7,14 +7,14 @@ from datetime import date, datetime
 class UserCreate(BaseModel):
     username: str
     password: str
-    role: Optional[str]="staff"
+    role: Optional[str] = "staff"
 
 class UserOut(BaseModel):
     id: int
     username: str
     role: str
     is_active: bool
-    created_at: datetime
+    created_at: datetime  # ✅ DB default = CURRENT_TIMESTAMP
 
     class Config:
         orm_mode = True
@@ -38,7 +38,8 @@ class MenuItemOut(BaseModel):
     stock_quantity: Optional[int] = 1
     category: Optional[str] = None
     is_active: bool
-    created_at: datetime
+    created_at: datetime  # ✅ DB default = CURRENT_TIMESTAMP
+    updated_at: datetime  # ✅ DB default = CURRENT_TIMESTAMP
 
     class Config:
         orm_mode = True
@@ -71,7 +72,8 @@ class OrderOut(BaseModel):
     user_id: int
     total_amount: float
     status: str
-    order_date: datetime
+    order_date: datetime  # ✅ DB default = CURRENT_TIMESTAMP
+    created_at: datetime  # ✅ DB default = CURRENT_TIMESTAMP
     items: List[OrderItemOut]
 
     class Config:
@@ -101,34 +103,31 @@ class SalesInsights(BaseModel):
     lowest_order_amount: Optional[float]
 
 
-# Expense Schemas (Pydantic)
-from pydantic import BaseModel
-from typing import Optional
-from datetime import date
-
+# ------------------ Expenses ------------------
 class ExpenseBase(BaseModel):
     category: str
     amount: float
     description: Optional[str] = None
-    date: Optional[date]  # ✅ Accepts actual date values or None
+    date: Optional[datetime] = None  # ✅ SQLAlchemy uses DateTime, not Date
 
 class ExpenseCreate(ExpenseBase):
     pass
 
 class ExpenseOut(ExpenseBase):
     id: int
-    date: Optional[date]  # ✅ Ensure this explicitly allows returning date
+    date: Optional[datetime] = None
+    created_at: Optional[datetime] = None  # ✅ Include created_at field
 
     class Config:
         orm_mode = True
 
-# schemas for asset
-class AssetStatus(str, Enum):  # Use `str` to allow JSON serialization
+
+# ------------------ Assets ------------------
+class AssetStatus(str, Enum):  # Use `str` for JSON serialization
     working = "working"
     repair = "repair"
     dispose = "dispose"
 
-# ✅ Base schema for creation (POST)
 class AssetCreate(BaseModel):
     name: str
     description: Optional[str] = None
@@ -137,7 +136,6 @@ class AssetCreate(BaseModel):
     purchase_date: Optional[date] = None
     status: AssetStatus = AssetStatus.working
 
-# ✅ For reading an asset (GET)
 class AssetOut(BaseModel):
     id: int
     name: str
@@ -146,9 +144,8 @@ class AssetOut(BaseModel):
     value: Optional[float]
     purchase_date: Optional[date]
     status: AssetStatus
-    added_at: datetime  # Changed from created_at to match your model
-    updated_at: Optional[datetime] = None  # Make optional since it might be None
-    
-    class Config:
-        from_attributes = True  # Updated for Pydantic v2
+    added_at: datetime  # ✅ DB default = CURRENT_TIMESTAMP
+    updated_at: Optional[datetime] = None  # ✅ auto-update column
 
+    class Config:
+        orm_mode = True

@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Date, Integer, String, Float, DateTime, ForeignKey, Boolean, func, Enum as SqlEnum
+from sqlalchemy import Column, text, Date, Integer, String, Float, DateTime, ForeignKey, Boolean, func, Enum as SqlEnum
 from sqlalchemy.orm import relationship, declarative_base
-from datetime import date, datetime
+from datetime import date
 from enum import Enum 
 
 Base = declarative_base()
@@ -10,9 +10,9 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True)
     password_hash = Column(String(255))
-    role = Column(String(10), default="user")
-    created_at = Column(DateTime, default=datetime.utcnow)
-    is_active = Column(Boolean, default=True)
+    role = Column(String(10), server_default=text("'user'"))
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
+    is_active = Column(Boolean, server_default=text("1"))
 
 class MenuItem(Base):
     __tablename__ = "menu_items"
@@ -21,19 +21,19 @@ class MenuItem(Base):
     price = Column(Float)
     stock_quantity = Column(Integer, nullable=True)
     category = Column(String(50), nullable=True)
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow)
+    is_active = Column(Boolean, server_default=text("1"))
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    total_amount = Column(Float, default=0)
-    order_date = Column(DateTime, default=datetime.utcnow)
-    status = Column(String(20), default="pending")
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    total_amount = Column(Float, server_default=text("0"))
+    order_date = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
+    status = Column(String(20), server_default=text("'pending'"))
+    is_active = Column(Boolean, server_default=text("1"))
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
     items = relationship("OrderItem", back_populates="order")
 
 class OrderItem(Base):
@@ -52,8 +52,8 @@ class Expense(Base):
     category = Column(String(100), nullable=False)
     amount = Column(Float, nullable=False)
     description = Column(String(255), nullable=True)
-    date = Column(Date, server_default=func.current_date())
-    created_at = Column(DateTime, default=datetime.utcnow)
+    date = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
+    created_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
 # ***************************
 
@@ -68,9 +68,9 @@ class Asset(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     description = Column(String(500), nullable=True)
-    quantity = Column(Integer, default=1)
+    quantity = Column(Integer, server_default=text("1"))
     value = Column(Float, nullable=True)
-    purchase_date = Column(Date, default=date.today)
-    status = Column(String(50), default="working")  # Simplified - use String instead of Enum
-    added_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    purchase_date = Column(Date, default=date.today)  # keep Python default for static value
+    status = Column(String(50), server_default=text("'working'"))
+    added_at = Column(DateTime(timezone=True), server_default=text("CURRENT_TIMESTAMP"))
+    updated_at = Column(DateTime(timezone=True), server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
