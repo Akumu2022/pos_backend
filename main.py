@@ -13,20 +13,23 @@ Base.metadata.create_all(bind=engine)
 initialize_admin()
 
 # Initialize FastAPI app
-app = FastAPI()
+app = FastAPI(title="Dede's Kitchen Backend")
 
 # ✅ Enable CORS
+
+origins = [
+    "http://localhost:5173",          # Local dev (Vite)
+    "http://localhost:3000",          # Local dev (CRA if ever used)
+    "https://dedes-kitchen.rhon.co.ke",   # Production frontend
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "*",
-        "http://localhost:5173",  # Local Vite
-    ],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # Routers
 app.include_router(auth_router.router, prefix="/auth", tags=["Auth"])

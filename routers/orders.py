@@ -54,6 +54,9 @@ def create_order(order_data: schemas.OrderCreate, db: Session = Depends(get_db))
     db.commit()
     db.refresh(new_order)
 
+    for item in new_order.items:
+        db.refresh(item)
+
     return new_order
 
 

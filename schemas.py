@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from datetime import date, datetime
 
 # ------------------ User ------------------
@@ -8,6 +8,7 @@ class UserCreate(BaseModel):
     username: str
     password: str
     role: Optional[str] = "staff"
+
 
 class UserOut(BaseModel):
     id: int
@@ -18,6 +19,7 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class UserUpdate(BaseModel):
     username: Optional[str]
@@ -30,6 +32,7 @@ class MenuItemCreate(BaseModel):
     price: float
     stock_quantity: Optional[int] = 1
     category: Optional[str] = "Uncategorized"
+
 
 class MenuItemOut(BaseModel):
     id: int
@@ -50,12 +53,15 @@ class OrderItemCreate(BaseModel):
     menu_item_id: int
     quantity: Optional[int] = 1
 
+
 class UserOrderCreate(BaseModel):  # 👈 for /user order endpoint
     items: List[OrderItemCreate]
+
 
 class OrderCreate(BaseModel):  # for admin order creation
     user_id: int
     items: List[OrderItemCreate]
+
 
 class OrderItemOut(BaseModel):
     id: int
@@ -67,17 +73,19 @@ class OrderItemOut(BaseModel):
     class Config:
         orm_mode = True
 
+
 class OrderOut(BaseModel):
     id: int
     user_id: int
     total_amount: float
     status: str
-    order_date: datetime  # ✅ DB default = CURRENT_TIMESTAMP
-    created_at: datetime  # ✅ DB default = CURRENT_TIMESTAMP
+    order_date: Optional[datetime] = None  # ✅ DB default = CURRENT_TIMESTAMP
+    created_at: Optional[datetime] = None  # ✅ DB default = CURRENT_TIMESTAMP
     items: List[OrderItemOut]
 
     class Config:
         orm_mode = True
+
 
 class OrderReceipt(BaseModel):  # 👈 for /user order receipt response
     order_id: int
@@ -86,9 +94,11 @@ class OrderReceipt(BaseModel):  # 👈 for /user order receipt response
     served_by: str
     served_at: str
 
+
 class ItemStats(BaseModel):
     name: str
     quantity: int
+
 
 class SalesInsights(BaseModel):
     busiest_day: Optional[str]
@@ -110,8 +120,10 @@ class ExpenseBase(BaseModel):
     description: Optional[str] = None
     date: Optional[datetime] = None  # ✅ SQLAlchemy uses DateTime, not Date
 
+
 class ExpenseCreate(ExpenseBase):
     pass
+
 
 class ExpenseOut(ExpenseBase):
     id: int
@@ -123,10 +135,11 @@ class ExpenseOut(ExpenseBase):
 
 
 # ------------------ Assets ------------------
-class AssetStatus(str, Enum):  # Use `str` for JSON serialization
+class AssetStatus(str, Enum):  # ✅ use str for JSON serialization
     working = "working"
     repair = "repair"
     dispose = "dispose"
+
 
 class AssetCreate(BaseModel):
     name: str
@@ -135,6 +148,7 @@ class AssetCreate(BaseModel):
     value: Optional[float] = None
     purchase_date: Optional[date] = None
     status: AssetStatus = AssetStatus.working
+
 
 class AssetOut(BaseModel):
     id: int
